@@ -1,0 +1,46 @@
+trigger:
+- main
+
+pool: DevOps-Pool
+
+- task: TerraformInstaller@1
+  inputs:
+    terraformVersion: 'latest'
+
+- task: TerraformTask@5
+  DisplayName: Init
+  inputs:
+
+    provider: 'azurerm'
+    command: 'init'
+    backendServiceArm: 'Yogi-SVC-New'
+    backendAzureRmResourceGroupName: 'hubtest'
+    backendAzureRmStorageAccountName: 'julystorage11'
+    backendAzureRmContainerName: 'julycontainer11'
+    backendAzureRmKey: 'y.tfstate'
+
+
+
+
+
+
+
+
+
+
+    
+
+- task: TerraformTask@5
+  DisplayName: Plan
+  inputs:
+    provider: 'azurerm'
+    command: 'plan'
+    environmentServiceNameAzureRM: 'Yogi-SVC-New'
+
+- task: TerraformTask@5
+    DisplayName: Apply
+  inputs:
+    provider: 'azurerm'
+    command: 'apply'
+    commandOptions: '--auto-approve'
+    environmentServiceNameAzureRM: 'Yogi-SVC-New'
