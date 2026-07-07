@@ -1,16 +1,19 @@
 trigger:
 - main
 
-pool: DevOps-Pool
+pool:
+  name: DevOps-Pool
+
+steps:
 
 - task: TerraformInstaller@1
+  displayName: Install Terraform
   inputs:
     terraformVersion: 'latest'
 
 - task: TerraformTask@5
-  DisplayName: Init
+  displayName: Init
   inputs:
-
     provider: 'azurerm'
     command: 'init'
     backendServiceArm: 'Yogi-SVC-New'
@@ -19,26 +22,26 @@ pool: DevOps-Pool
     backendAzureRmContainerName: 'julycontainer11'
     backendAzureRmKey: 'y.tfstate'
 
+- task: TerraformTask@5
+  displayName: Validate
+  inputs:
+    provider: 'azurerm'
+    command: 'validate'
 
-
-
-
-
-
-
-
-
-    
+- task: tfsec@1
+  displayName: TFsec Scan
+  inputs:
+    version: 'v1.26.0'
 
 - task: TerraformTask@5
-  DisplayName: Plan
+  displayName: Plan
   inputs:
     provider: 'azurerm'
     command: 'plan'
     environmentServiceNameAzureRM: 'Yogi-SVC-New'
 
 - task: TerraformTask@5
-    DisplayName: Apply
+  displayName: Apply
   inputs:
     provider: 'azurerm'
     command: 'apply'
