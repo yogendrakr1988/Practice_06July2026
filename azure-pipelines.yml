@@ -6,44 +6,54 @@ pool:
 
 steps:
 
+# Install Terraform
 - task: TerraformInstaller@1
   displayName: Install Terraform
   inputs:
     terraformVersion: 'latest'
 
+# Terraform Init
 - task: TerraformTask@5
   displayName: Init
   inputs:
     provider: 'azurerm'
     command: 'init'
+    workingDirectory: 'landing_zone/environment/dev'
     backendServiceArm: 'Yogi-SVC-New'
     backendAzureRmResourceGroupName: 'hubtest'
     backendAzureRmStorageAccountName: 'julystorage11'
     backendAzureRmContainerName: 'julycontainer11'
     backendAzureRmKey: 'y.tfstate'
 
+# Terraform Validate
 - task: TerraformTask@5
   displayName: Validate
   inputs:
     provider: 'azurerm'
     command: 'validate'
+    workingDirectory: 'landing_zone/environment/dev'
 
+# TFsec Scan
 - task: tfsec@1
   displayName: TFsec Scan
   inputs:
     version: 'v1.26.0'
 
+# Terraform Plan
 - task: TerraformTask@5
   displayName: Plan
   inputs:
     provider: 'azurerm'
     command: 'plan'
+    workingDirectory: 'landing_zone/environment/dev'
     environmentServiceNameAzureRM: 'Yogi-SVC-New'
 
+# Terraform Apply
 - task: TerraformTask@5
   displayName: Apply
   inputs:
     provider: 'azurerm'
     command: 'apply'
+    workingDirectory: 'landing_zone/environment/dev'
     commandOptions: '--auto-approve'
     environmentServiceNameAzureRM: 'Yogi-SVC-New'
